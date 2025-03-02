@@ -10,15 +10,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 interface Patient {
-  id: number;
+  id?: number;
   name: string;
-  gender?: string;
-  phone_number?: string;
-  nextAppointment?: string;
-  status: "active" | "inactive" | "calling";
+  context: string;
   phoneNumber: string;
   avatarUrl?: string;
   lastCall?: string;
@@ -40,15 +44,7 @@ export function PatientAgentCard({
   return (
     <Card className="relative overflow-hidden transition-all hover:shadow-lg">
       {/* Status indicator */}
-      <div
-        className={`absolute right-4 top-4 h-2 w-2 rounded-full ${
-          patient.status === "active"
-            ? "bg-green-500"
-            : patient.status === "calling"
-            ? "bg-yellow-500 animate-pulse"
-            : "bg-gray-300"
-        }`}
-      />
+      <div />
 
       <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
         <Avatar className="h-12 w-12">
@@ -61,7 +57,7 @@ export function PatientAgentCard({
           </AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <CardTitle className="text-lg">{patient.name}</CardTitle>
+          <CardTitle className="text-lg font-black">{patient.name}</CardTitle>
           <CardDescription>{patient.phoneNumber}</CardDescription>
         </div>
         <DropdownMenu>
@@ -72,12 +68,12 @@ export function PatientAgentCard({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onViewDetails(patient.id)}>
+            <DropdownMenuItem onClick={() => onViewDetails(patient.id ?? 0)}>
               Edit Patient
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => onDelete(patient.id)}
+              onClick={() => onDelete(patient.id ?? 0)}
               className="text-red-600"
             >
               Archive Patient
@@ -86,18 +82,14 @@ export function PatientAgentCard({
         </DropdownMenu>
       </CardHeader>
 
-      <CardContent className="pb-2">
+      <CardContent className="py-4">
         <div className="flex flex-col gap-2">
           {patient.lastCall && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Phone className="h-4 w-4" />
-              <span>Last call: {patient.lastCall}</span>
-            </div>
-          )}
-          {patient.nextAppointment && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              <span>Next appointment: {patient.nextAppointment}</span>
+            <div className="flex-col items-center gap-4 text-md text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                {patient.phoneNumber}
+              </div>
             </div>
           )}
         </div>
@@ -105,15 +97,10 @@ export function PatientAgentCard({
 
       <CardFooter className="pt-4">
         <Button
-          onClick={() => onCall(patient.id)}
+          onClick={() => onCall(patient.id ?? 0)}
           className="w-full gap-2"
-          variant={patient.status === "calling" ? "secondary" : "default"}
-          disabled={patient.status === "inactive"}
         >
           <Mic2 className="h-4 w-4" />
-          {patient.status === "calling"
-            ? `Currently Consulting with ${patient.name}`
-            : `Start Consultation for ${patient.name}`}
         </Button>
       </CardFooter>
     </Card>

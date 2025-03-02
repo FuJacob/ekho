@@ -32,11 +32,18 @@ EventEmitter.defaultMaxListeners = 15;
 // Initialize Express with WebSocket support
 const app = express();
 expressWs(app);
+import {
+  clerkMiddleware,
+  clerkClient,
+  requireAuth,
+  getAuth,
+} from "@clerk/express";
 
 // Middleware configuration
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(clerkMiddleware());
 
 // Constants
 
@@ -238,7 +245,7 @@ app.get("/api/get-patient-data", async (req, res) => {
   try {
     const { id } = req.query; // Access the id query param
     const { data, error } = await supabase
-      .from("patient_data")
+      .from("user_data")
       .select("*")
       .eq("id", parseInt(id, 10));
 
@@ -297,6 +304,24 @@ app.post("/api/clone-voice", upload.single("file"), async (req, res) => {
   }
 });
 
+app.delete("/api/delete-user", async (req, res) => {
+  try {
+    const { id } = req.query; // Access the id query param
+    const { data, error } = await supabase
+      .from("user_data")
+      .delete()
+      .eq("id", parseInt(id, 10));
+
+    if (error) return res.status(400).json({ error: error.message });
+    res.json(data);
+  }
+  catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+})
+
+
 app.post("/api/selected-voice", async (req, res) => {
   try {
     const voiceId = req.body.voiceId;
@@ -328,6 +353,42 @@ app.get("/api/get-selected-voice", async (req, res) => {
   }
 });
 
+app.get("/api/get-users", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("user_data").select("*");
+
+    if (error) return res.status(400).json({ error: error.message });
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+}
+);
+
+app.post("/api/add-user", async (req, res) => {
+  try {
+    console.log(req.body);
+    const { data, error } = await supabase
+      .from("user_data")
+      .insert([req.body])
+      .select();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    // Return success response with the inserted data
+    return res.status(201).json({
+      success: true,
+      message: "User added successfully",
+      data: data,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/`);
