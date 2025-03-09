@@ -28,6 +28,7 @@ export default function Page() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
   const [modalMode, setModalMode] = useState<"edit" | "add">("edit");
 
+ 
   useEffect(() => {
     fetchPatients();
   }, []);
@@ -146,23 +147,9 @@ export default function Page() {
 
   return (
     <SidebarProvider>
-      <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Patients</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -181,9 +168,9 @@ export default function Page() {
               className="flex h-[200px] cursor-pointer items-center justify-center hover:bg-accent/50 transition-colors"
               onClick={handleAddPatient}
             >
-              <CardContent className="flex flex-col items-center gap-2 text-muted-foreground">
-                <Plus className="h-8 w-8" />
-                <p>Add New Patient</p>
+              <CardContent className="flex flex-col items-center gap-2 text-2xl text-muted-foreground">
+                <Plus className="h-12 w-12" />
+                <p>Add New Contact</p>
               </CardContent>
             </Card>
           </div>

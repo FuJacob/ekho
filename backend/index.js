@@ -96,23 +96,6 @@ app.post("/api/call", async (req, res) => {
 });
 
 /**
- * @route POST /incoming
- * @description Handles incoming Twilio calls
- */
-app.post("/incoming", (req, res) => {
-  try {
-    const response = new twilio.twiml.VoiceResponse();
-    const connect = response.connect();
-    connect.stream({ url: `wss://${process.env.SERVER}/connection` });
-    res.type("text/xml");
-    res.send(response.toString());
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error handling incoming call");
-  }
-});
-
-/**
  * @route POST /startOutboundCall
  * @description Initiates an outbound call to a specified number
  */
@@ -341,12 +324,12 @@ app.post("/api/selected-voice", async (req, res) => {
 app.get("/api/get-selected-voice", async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("selected_voice")
+      .from("user_voices")
       .select("*")
       .limit(1);
 
     if (error) return res.status(400).json({ error: error.message });
-    res.json(data[0].voice_id);
+    res.json(data[0].voiceId);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: err.message });
@@ -366,9 +349,12 @@ app.get("/api/get-users", async (req, res) => {
 }
 );
 
-app.post("/api/add-user", async (req, res) => {
+app.post("/api/add-user", requireAuth(), async (req, res) => {
   try {
+    const { userId } = getAuth(req);
+    console.log(userId);
     console.log(req.body);
+    req.body["userId"] = userId;
     const { data, error } = await supabase
       .from("user_data")
       .insert([req.body])

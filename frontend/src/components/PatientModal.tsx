@@ -36,6 +36,7 @@ export function PatientModal({
   patientId,
   mode,
 }: PatientModalProps) {
+
   const [formData, setFormData] = useState<Patient>({
     name: "",
     context: "",
@@ -62,7 +63,6 @@ export function PatientModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       // Add the ID to the data for the API
       const patientData = {
@@ -99,17 +99,17 @@ export function PatientModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="">
         <DialogHeader>
           <DialogTitle>
-            {mode === "edit" ? "Edit Patient Details" : "Add New Patient"}
+            {mode === "edit" ? "Edit Contact Details" : "Add New Contact"}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                Name
+                Contact Name
               </Label>
               <Input
                 id="name"
@@ -124,7 +124,7 @@ export function PatientModal({
 
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="phoneNumber" className="text-right">
-                Phone
+                Phone Number
               </Label>
               <Input
                 id="phoneNumber"
@@ -174,6 +174,6 @@ export function PatientModal({
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+  </Dialog>
   );
 }
