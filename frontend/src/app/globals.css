@@ -143,6 +143,13 @@
 
 
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
