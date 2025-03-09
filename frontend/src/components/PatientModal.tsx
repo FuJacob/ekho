@@ -99,7 +99,7 @@ export function PatientModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="">
+      <DialogContent className="bg-white">
         <DialogHeader>
           <DialogTitle>
             {mode === "edit" ? "Edit Contact Details" : "Add New Contact"}

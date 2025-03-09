@@ -8,7 +8,6 @@ const NavAccountSection = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-
   const logOut = async () => {
     const supabase = await createClient();
 
@@ -38,6 +37,13 @@ const NavAccountSection = () => {
       ) : user ? (
         <div className="flex gap-4 items-center justify-center">
           <p>{user.email}</p>
+
+          <Link
+            className="bg-black text-white font-semibold p-3 rounded-3xl"
+            href="/dashboard"
+          >
+            Dashboard
+          </Link>
           <button
             className="bg-black text-white font-semibold p-3 rounded-3xl"
             onClick={() => logOut()}
