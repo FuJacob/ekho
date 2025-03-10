@@ -13,7 +13,6 @@ import multer from "multer";
 import { ElevenLabsClient } from "elevenlabs";
 import fs from "fs";
 import { createClient } from "@supabase/supabase-js";
-
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
@@ -349,12 +348,10 @@ app.get("/api/get-users", async (req, res) => {
 }
 );
 
-app.post("/api/add-user", requireAuth(), async (req, res) => {
+app.post("/api/add-user", async (req, res) => {
   try {
-    const { userId } = getAuth(req);
-    console.log(userId);
     console.log(req.body);
-    req.body["userId"] = userId;
+
     const { data, error } = await supabase
       .from("user_data")
       .insert([req.body])

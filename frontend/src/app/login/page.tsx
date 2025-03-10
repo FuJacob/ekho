@@ -30,7 +30,6 @@ export default function SignInPage() {
       if (error) {
         throw error;
       }
-
       
       if (data) router.push("/");
 

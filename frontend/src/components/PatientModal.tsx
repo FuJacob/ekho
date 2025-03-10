@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner"; // Optional for notifications
-
+import { createClient } from "@/utils/supabase/client";
 // Updated interface to match Patient type
 export interface Patient {
   name: string;
@@ -36,7 +36,6 @@ export function PatientModal({
   patientId,
   mode,
 }: PatientModalProps) {
-
   const [formData, setFormData] = useState<Patient>({
     name: "",
     context: "",
@@ -69,12 +68,27 @@ export function PatientModal({
         ...formData,
       };
 
+      const supabase = createClient();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const userId = user.id;
+      console.log(userId);
+
+      // Add the user ID to the patient data
+      const patientDataWithUserId = {
+        ...formData,
+        userId: userId, // Add the user ID from Supabase auth
+      };
+
       const response = await fetch("http://localhost:5500/api/add-user", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", 
         },
-        body: JSON.stringify(patientData),
+        body: JSON.stringify(patientDataWithUserId),
       });
 
       if (!response.ok) {
@@ -174,6 +188,6 @@ export function PatientModal({
           </DialogFooter>
         </form>
       </DialogContent>
-  </Dialog>
+    </Dialog>
   );
 }
